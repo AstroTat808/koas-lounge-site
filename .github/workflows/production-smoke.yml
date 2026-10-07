@@ -1,0 +1,87 @@
+name: Production smoke check
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-smoke
+  cancel-in-progress: true
+
+jobs:
+  production-smoke:
+    name: Verify koaslounge.com production
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Resolve production domain
+        run: |
+          python - <<'PY'
+          import socket
+          host = "koaslounge.com"
+          infos = socket.getaddrinfo(host, 443, type=socket.SOCK_STREAM)
+          addresses = sorted({item[4][0] for item in infos})
+          if not addresses:
+              raise SystemExit(f"No DNS addresses resolved for {host}")
+          print(f"{host} resolves to:")
+          for address in addresses:
+              print(f"  {address}")
+          PY
+
+      - name: Wait for production and verify admin page
+        run: |
+          set -euo pipefail
+          url="https://koaslounge.com/admin/"
+          ok=0
+          for attempt in $(seq 1 20); do
+            echo "Attempt $attempt: $url"
+            if curl --fail --silent --show-error --location --max-time 20 "$url" -o /tmp/admin.html; then
+              if grep -Fq "Koa's Lounge Payroll Admin" /tmp/admin.html; then
+                ok=1
+                break
+              fi
+              echo "Admin page responded but expected payroll title was not present."
+            fi
+            sleep 15
+          done
+          if [ "$ok" -ne 1 ]; then
+            echo "Production admin page did not become healthy in time."
+            exit 1
+          fi
+          echo "Production admin page is live."
+
+      - name: Verify payroll backend status
+        run: |
+          set -euo pipefail
+          url="https://koaslounge.com/.netlify/functions/payroll-admin?op=status"
+          ok=0
+          for attempt in $(seq 1 12); do
+            echo "Attempt $attempt: payroll status endpoint"
+            if curl --fail --silent --show-error --location --max-time 20 "$url" -o /tmp/payroll-status.json; then
+              if python - <<'PY'
+          import json
+          with open("/tmp/payroll-status.json", "r", encoding="utf-8") as f:
+              data = json.load(f)
+          if not isinstance(data.get("configured"), bool):
+              raise SystemExit("Missing boolean configured field")
+          if data.get("tax_engine_version") != "2026.1":
+              raise SystemExit(f"Unexpected tax engine version: {data.get('tax_engine_version')!r}")
+          print("Payroll backend status:", data)
+          PY
+              then
+                ok=1
+                break
+              fi
+            fi
+            echo "Status endpoint not healthy yet."
+            cat /tmp/payroll-status.json 2>/dev/null || true
+            sleep 10
+          done
+          if [ "$ok" -ne 1 ]; then
+            echo "Payroll backend status endpoint did not become healthy in time."
+            exit 1
+          fi
