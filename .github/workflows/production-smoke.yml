@@ -76,6 +76,23 @@ jobs:
           fi
           echo "Latest admin frontend bundle is live."
 
+      - name: Verify login POST path
+        run: |
+          set -euo pipefail
+          code=$(curl --silent --show-error --output /tmp/login-test.json --write-out "%{http_code}" \
+            --request POST \
+            --header "Origin: https://koaslounge.com" \
+            --header "Content-Type: application/json" \
+            --data '{"email":"invalid@example.com","password":"definitely-wrong-password"}' \
+            "https://koaslounge.com/.netlify/functions/payroll-admin?op=login")
+          cat /tmp/login-test.json
+          if [ "$code" != "401" ]; then
+            echo "Expected 401 invalid credentials from login POST, got HTTP $code"
+            exit 1
+          fi
+          grep -Fq 'Invalid email or password.' /tmp/login-test.json
+          echo "Login POST reached credential validation."
+
       - name: Verify payroll backend status
         run: |
           set -euo pipefail
