@@ -54,6 +54,13 @@ jobs:
           fi
           echo "Production admin page is live."
 
+      - name: Verify latest admin frontend bundle
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261006-3" -o /tmp/admin-app.js
+          grep -Fq 'const BUILD="20261006-3"' /tmp/admin-app.js
+          echo "Latest admin frontend bundle is live."
+
       - name: Verify payroll backend status
         run: |
           set -euo pipefail
@@ -66,8 +73,8 @@ jobs:
           import json
           with open("/tmp/payroll-status.json", "r", encoding="utf-8") as f:
               data = json.load(f)
-          if not isinstance(data.get("configured"), bool):
-              raise SystemExit("Missing boolean configured field")
+          if data.get("configured") is not True:
+              raise SystemExit(f"Payroll admin should be configured, got: {data.get('configured')!r}")
           if data.get("tax_engine_version") != "2026.1":
               raise SystemExit(f"Unexpected tax engine version: {data.get('tax_engine_version')!r}")
           print("Payroll backend status:", data)
