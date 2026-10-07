@@ -57,8 +57,23 @@ jobs:
       - name: Verify latest admin frontend bundle
         run: |
           set -euo pipefail
-          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261006-3" -o /tmp/admin-app.js
-          grep -Fq 'const BUILD="20261006-3"' /tmp/admin-app.js
+          ok=0
+          for attempt in $(seq 1 20); do
+            echo "Attempt $attempt: latest admin frontend"
+            if curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-latest.html &&
+               grep -Fq '/admin/app.js?v=20261006-3' /tmp/admin-latest.html &&
+               curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261006-3" -o /tmp/admin-app.js &&
+               grep -Fq 'const BUILD="20261006-3"' /tmp/admin-app.js; then
+              ok=1
+              break
+            fi
+            echo "Latest frontend has not propagated yet."
+            sleep 15
+          done
+          if [ "$ok" -ne 1 ]; then
+            echo "Latest admin frontend did not become live in time."
+            exit 1
+          fi
           echo "Latest admin frontend bundle is live."
 
       - name: Verify payroll backend status
