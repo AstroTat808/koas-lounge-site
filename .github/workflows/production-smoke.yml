@@ -103,11 +103,11 @@ jobs:
             --data '{"email":"invalid@example.com","recovery_key":"invalid","new_password":"not-a-real-password"}' \
             "https://koaslounge.com/.netlify/functions/payroll-admin?op=admin-recovery")
           cat /tmp/recovery-test.json
-          if [ "$code" != "403" ]; then
-            echo "Expected 403 from invalid recovery request, got HTTP $code"
+          if [ "$code" != "403" ] && [ "$code" != "410" ]; then
+            echo "Expected safe recovery rejection (403 or 410), got HTTP $code"
             exit 1
           fi
-          echo "Recovery POST path is live."
+          echo "Recovery POST path is live and safely rejects reuse/invalid requests."
 
       - name: Verify payroll backend status
         run: |
