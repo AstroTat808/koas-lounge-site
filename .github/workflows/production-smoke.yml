@@ -61,9 +61,9 @@ jobs:
           for attempt in $(seq 1 20); do
             echo "Attempt $attempt: latest admin frontend"
             if curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-latest.html &&
-               grep -Fq '/admin/app.js?v=20261006-5' /tmp/admin-latest.html &&
-               curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261006-5" -o /tmp/admin-app.js &&
-               grep -Fq 'const BUILD="20261006-5"' /tmp/admin-app.js; then
+               grep -Fq '/admin/app.js?v=20261006-6' /tmp/admin-latest.html &&
+               curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261006-6" -o /tmp/admin-app.js &&
+               grep -Fq 'const BUILD="20261006-6"' /tmp/admin-app.js; then
               ok=1
               break
             fi
@@ -92,6 +92,22 @@ jobs:
           fi
           grep -Fq 'Invalid email or password.' /tmp/login-test.json
           echo "Login POST reached credential validation."
+
+      - name: Verify recovery POST path
+        run: |
+          set -euo pipefail
+          code=$(curl --silent --show-error --output /tmp/recovery-test.json --write-out "%{http_code}" \
+            --request POST \
+            --header "Origin: https://koaslounge.com" \
+            --header "Content-Type: application/json" \
+            --data '{"email":"invalid@example.com","recovery_key":"invalid","new_password":"not-a-real-password"}' \
+            "https://koaslounge.com/.netlify/functions/payroll-admin?op=admin-recovery")
+          cat /tmp/recovery-test.json
+          if [ "$code" != "403" ]; then
+            echo "Expected 403 from invalid recovery request, got HTTP $code"
+            exit 1
+          fi
+          echo "Recovery POST path is live."
 
       - name: Verify payroll backend status
         run: |
