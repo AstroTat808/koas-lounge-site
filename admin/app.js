@@ -1,4 +1,4 @@
-const BUILD="20261006-7";
+const BUILD="20261006-8";
 const $=s=>document.querySelector(s),money=n=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(+n||0),num=n=>(+n||0).toFixed(2),esc=v=>String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
 const ep=o=>"/.netlify/functions/payroll-admin?op="+encodeURIComponent(o);let D={employees:[],entries:[],runs:[],audit:[]},timer,CSV=null,CSVNAME="";
 async function api(op,opt={}){const h={...(opt.headers||{})};if(opt.body)h["content-type"]="application/json";const url=ep(op)+(op==="status"||op==="me"?"&t="+Date.now():"");const r=await fetch(url,{credentials:"same-origin",cache:"no-store",...opt,headers:h}),j=await r.json().catch(()=>({error:"Request failed."}));if(r.status===401&&!["login","setup","status"].includes(op))login();if(!r.ok){const e=Error(j.error||"Request failed.");Object.assign(e,j);throw e}return j}
