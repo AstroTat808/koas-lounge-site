@@ -61,9 +61,9 @@ jobs:
           for attempt in $(seq 1 20); do
             echo "Attempt $attempt: latest admin frontend"
             if curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-latest.html &&
-               grep -Fq '/admin/app.js?v=20261006-4' /tmp/admin-latest.html &&
-               curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261006-4" -o /tmp/admin-app.js &&
-               grep -Fq 'const BUILD="20261006-4"' /tmp/admin-app.js; then
+               grep -Fq '/admin/app.js?v=20261006-5' /tmp/admin-latest.html &&
+               curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261006-5" -o /tmp/admin-app.js &&
+               grep -Fq 'const BUILD="20261006-5"' /tmp/admin-app.js; then
               ok=1
               break
             fi
