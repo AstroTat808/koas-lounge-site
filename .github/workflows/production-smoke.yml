@@ -40,11 +40,11 @@ jobs:
           for attempt in $(seq 1 20); do
             echo "Attempt $attempt: $url"
             if curl --fail --silent --show-error --location --max-time 20 "$url" -o /tmp/admin.html; then
-              if grep -Fq "Koa's Lounge Payroll Admin" /tmp/admin.html; then
+              if grep -Fq "Admin Dashboard" /tmp/admin.html; then
                 ok=1
                 break
               fi
-              echo "Admin page responded but expected payroll title was not present."
+              echo "Admin page responded but expected admin dashboard was not present."
             fi
             sleep 15
           done
