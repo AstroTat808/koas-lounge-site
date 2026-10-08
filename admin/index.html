@@ -1,8 +1,8 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>Koa's Lounge Admin</title><link rel="stylesheet" href="/admin/styles.css?v=20261007-4"></head><body><!-- legacy-smoke-title: Koa's Lounge Payroll Admin -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>Koa's Lounge Admin</title><link rel="stylesheet" href="/admin/styles.css?v=20261007-5"></head><body><!-- legacy-smoke-title: Koa's Lounge Payroll Admin -->
 <div id="login" class="center"><div class="panel auth">
 <h1>Koa's Lounge</h1>
 <h2>Admin Login</h2>
-<p class="note">Secure administrator login · build 20261007-4</p>
+<p class="note">Secure administrator login · build 20261007-5</p>
 <form id="loginForm">
   <label>Email<input id="email" type="email" required></label>
   <label>Password<input id="password" type="password" required></label>
@@ -73,7 +73,7 @@
 </section>
 
 <section id="employeesView" class="adminView" data-admin-view="employees" hidden>
-  <div class="pageIntro"><p class="eyebrow">Employees</p><h2>Employee & tax profiles</h2><p class="note">Select an employee to review their rate, pay frequency, Toast mapping, W-4 and Hawaiʻi HW-4.</p></div>
+  <div class="pageIntro sectionHead"><div><p class="eyebrow">Employees</p><h2>Employee & tax profiles</h2><p class="note">Select an employee to review their rate, pay frequency, Toast mapping, W-4 and Hawaiʻi HW-4.</p></div><button id="addEmployeeBtn">Add Employee</button></div>
   <section class="panel"><h2 id="employeeHeading">Employee</h2><form id="employeeForm"><label>Employee<select id="employee_select"></select></label>
 <label>Hourly rate<input id="hourly_rate" type="number" step=".01" min="0"></label><label>Payroll frequency<select id="pay_frequency"><option value="weekly">Weekly</option><option value="biweekly">Biweekly</option></select></label><p class="note">Pay week runs Monday through Sunday.</p><label>Toast employee GUID<input id="toast_employee_guid"></label>
 <fieldset><legend>Federal W-4 (2026)</legend><label class="check"><input id="w4_on_file" type="checkbox"> W-4 on file</label><label>Filing status<select id="federal_filing_status"><option value="single">Single / Married filing separately</option><option value="married">Married filing jointly</option><option value="head">Head of household</option></select></label><label class="check"><input id="w4_step2_checked" type="checkbox"> Step 2(c) multiple jobs</label><div class="row"><label>Step 3 credits<input id="w4_step3_credits" type="number" min="0" step=".01"></label><label>Step 4(a) other income<input id="w4_step4a_other_income" type="number" min="0" step=".01"></label></div><div class="row"><label>Step 4(b) deductions<input id="w4_step4b_deductions" type="number" min="0" step=".01"></label><label>Step 4(c) extra withholding<input id="w4_step4c_extra" type="number" min="0" step=".01"></label></div><label class="check"><input id="w4_exempt" type="checkbox"> Exempt from federal withholding</label><label class="check"><input id="w4_nonresident_alien" type="checkbox"> Nonresident alien adjustment</label><label class="check"><input id="w4_nra_india_exception" type="checkbox"> India student/apprentice exception</label></fieldset>
@@ -99,7 +99,7 @@
   <div class="pageIntro"><p class="eyebrow">Imports</p><h2>Toast time entries</h2><p class="note">Preview before import. New employee names are detected and kept separate from existing payroll records.</p></div>
   <section class="panel">
     <div class="actions"><button id="importsImportBtn">Preview Toast CSV</button><button id="syncBtn" class="secondary">Sync Toast API</button></div>
-    <div class="notice"><b>Native Toast Time Entries CSV supported.</b> Employee, Date, Time In, Time Out and Payable Hours are read automatically. New employees require a rate before approval.</div>
+    <div class="notice"><b>Native Toast Time Entries CSV supported.</b> Employee, Date, Time In, Time Out and Payable Hours are read automatically. New Toast employee names are created automatically and their time entries import immediately; you can set their hourly rate afterward.</div>
     <div class="notice"><b>Tips are excluded from this hours calculation.</b> Cash Tips Declared is not used to calculate hourly payroll here.</div>
     <p class="note"><a href="/admin/toast-csv-template.csv">Download generic CSV template</a></p>
   </section>
@@ -111,5 +111,14 @@
 </section>
 </main></div>
 <dialog id="csvDialog"><div class="dialog"><div class="head"><div><h2>Review Toast CSV</h2><p id="csvPreviewFile"></p></div><button id="csvClose" class="secondary">×</button></div><div id="csvNewEmployees" class="newEmployees" hidden></div><div id="csvSummary" class="preview"></div><div class="table"><table><thead><tr><th>Row</th><th>Employee</th><th>Date</th><th>Regular</th><th>OT</th><th>Wage</th><th>Status</th></tr></thead><tbody id="csvPreviewBody"></tbody></table></div><div class="actions"><button id="csvCancel" class="secondary">Cancel</button><button id="csvApprove">Approve & import valid rows</button></div></div></dialog>
+<dialog id="addEmployeeDialog"><form id="addEmployeeForm" class="dialog">
+<div class="head"><div><p class="eyebrow">Employees</p><h2>Add Employee</h2></div><button id="addEmployeeClose" type="button" class="secondary">×</button></div>
+<label>Employee name<input id="new_employee_name" required placeholder="First Last"></label>
+<div class="row"><label>Hourly rate <span class="note">(optional)</span><input id="new_employee_rate" type="number" min="0" step=".01" placeholder="0.00"></label><label>Payroll frequency<select id="new_employee_frequency"><option value="weekly">Weekly</option><option value="biweekly">Biweekly</option></select></label></div>
+<label>Toast employee name <span class="note">(optional)</span><input id="new_employee_toast_alias" placeholder="Example: Passi, Nahiku"></label>
+<p class="note">If you leave the rate blank, the employee can still receive imported time entries. Payroll will remain flagged until a rate is entered.</p>
+<p id="addEmployeeMsg" class="error"></p>
+<div class="actions"><button id="addEmployeeCancel" type="button" class="secondary">Cancel</button><button>Create Employee</button></div>
+</form></dialog>
 <dialog id="editDialog"><form id="editForm" class="dialog"><h2>Edit Time Entry</h2><input id="edit_guid" type="hidden"><label>Date<input id="edit_business_date" type="date" required></label><div class="row"><label>Regular hours<input id="edit_regular_hours" type="number" min="0" step=".01"></label><label>OT hours<input id="edit_overtime_hours" type="number" min="0" step=".01"></label></div><label>Hourly wage<input id="edit_hourly_wage" type="number" min=".01" step=".01"></label><div class="actions"><button id="editCancel" type="button" class="secondary">Cancel</button><button>Save correction</button></div></form></dialog>
-<script src="/admin/app.js?v=20261007-4" defer></script></body></html>
+<script src="/admin/app.js?v=20261007-5" defer></script></body></html>
