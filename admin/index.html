@@ -1,8 +1,8 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>Koa's Lounge Payroll Admin</title><link rel="stylesheet" href="/admin/styles.css?v=20261006-8"></head><body>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>Koa's Lounge Payroll Admin</title><link rel="stylesheet" href="/admin/styles.css?v=20261007-1"></head><body>
 <div id="login" class="center"><div class="panel auth">
 <h1>Koa's Lounge</h1>
 <h2>Payroll Admin</h2>
-<p class="note">Secure administrator login · build 20261006-8</p>
+<p class="note">Secure administrator login · build 20261007-1</p>
 <form id="loginForm">
   <label>Email<input id="email" type="email" required></label>
   <label>Password<input id="password" type="password" required></label>
@@ -26,7 +26,7 @@
 </div></div>
 <div id="app" hidden><header><div><strong>Koa's Lounge</strong><span>Payroll Admin</span></div><nav><a href="/">Public site</a><button id="logout" class="secondary">Sign out</button></nav></header><main>
 <section class="hero"><div><p class="eyebrow">Private administration</p><h1>Payroll Dashboard</h1><p>Toast hours, CSV imports, payroll runs and payment history.</p></div><div class="actions"><button id="syncBtn">Sync Toast API</button><label class="button secondary">Preview Toast CSV<input id="csvFile" type="file" accept=".csv,text/csv" hidden></label></div></section>
-<div id="importStatus" class="status" hidden></div><div class="notice"><b>Tips are excluded.</b> Bartender cash and credit-card tips are not included in payroll.</div>
+<div id="importStatus" class="status" hidden></div><div class="notice"><b>Tips are excluded.</b> Bartender cash and credit-card tips are not included in payroll.</div><div class="notice"><b>Native Toast Time Entries CSV supported.</b> The importer reads Employee, Date, Time In, Time Out and Payable Hours. Cash Tips Declared is ignored. When Toast does not provide an OT column, overtime is derived by Koa’s Monday–Sunday workweek.</div>
 <section class="cards"><div><small>Employee</small><b>Craig Wong</b></div><div><small>Current rate</small><b id="rateCard">$16.00/hr</b></div><div><small>Last payment</small><b id="lastPayment">—</b></div><div><small>Time entries</small><b id="entryCount">0</b></div></section>
 <div class="grid"><section class="panel"><h2>Craig Wong</h2><form id="employeeForm">
 <label>Hourly rate<input id="hourly_rate" type="number" step=".01" min="0"></label><label>Payroll frequency<select id="pay_frequency"><option value="weekly">Weekly</option><option value="biweekly">Biweekly</option></select></label><p class="note">Pay week runs Monday through Sunday.</p><label>Toast employee GUID<input id="toast_employee_guid"></label>
@@ -43,4 +43,4 @@
 </main></div>
 <dialog id="csvDialog"><div class="dialog"><div class="head"><div><h2>Review Toast CSV</h2><p id="csvPreviewFile"></p></div><button id="csvClose" class="secondary">×</button></div><div id="csvSummary" class="preview"></div><div class="table"><table><thead><tr><th>Row</th><th>Employee</th><th>Date</th><th>Regular</th><th>OT</th><th>Wage</th><th>Status</th></tr></thead><tbody id="csvPreviewBody"></tbody></table></div><div class="actions"><button id="csvCancel" class="secondary">Cancel</button><button id="csvApprove">Approve & import valid rows</button></div></div></dialog>
 <dialog id="editDialog"><form id="editForm" class="dialog"><h2>Edit Time Entry</h2><input id="edit_guid" type="hidden"><label>Date<input id="edit_business_date" type="date" required></label><div class="row"><label>Regular hours<input id="edit_regular_hours" type="number" min="0" step=".01"></label><label>OT hours<input id="edit_overtime_hours" type="number" min="0" step=".01"></label></div><label>Hourly wage<input id="edit_hourly_wage" type="number" min=".01" step=".01"></label><div class="actions"><button id="editCancel" type="button" class="secondary">Cancel</button><button>Save correction</button></div></form></dialog>
-<script src="/admin/app.js?v=20261006-8" defer></script></body></html>
+<script src="/admin/app.js?v=20261007-1" defer></script></body></html>
