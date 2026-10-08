@@ -1,8 +1,8 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>Koa's Lounge Admin</title><link rel="stylesheet" href="/admin/styles.css?v=20261007-5"></head><body><!-- legacy-smoke-title: Koa's Lounge Payroll Admin -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>Koa's Lounge Admin</title><link rel="stylesheet" href="/admin/styles.css?v=20261007-6"></head><body><!-- legacy-smoke-title: Koa's Lounge Payroll Admin -->
 <div id="login" class="center"><div class="panel auth">
 <h1>Koa's Lounge</h1>
 <h2>Admin Login</h2>
-<p class="note">Secure administrator login · build 20261007-5</p>
+<p class="note">Secure administrator login · build 20261007-6</p>
 <form id="loginForm">
   <label>Email<input id="email" type="email" required></label>
   <label>Password<input id="password" type="password" required></label>
@@ -55,7 +55,7 @@
     <div><small>Last payroll</small><b id="overviewLastPayroll">—</b></div>
   </section>
   <section class="panel">
-    <div class="sectionHead"><div><p class="eyebrow">Team</p><h2>Employees</h2><p class="note">Open an employee only when you need their detailed payroll or tax profile.</p></div><button id="overviewEmployeesBtn" class="secondary">Manage employees</button></div>
+    <div class="sectionHead"><div><p class="eyebrow">Team</p><h2>Employees</h2><p class="note">Open an employee only when you need their detailed payroll or tax profile.</p></div><div class="actions"><button id="overviewAddEmployeeBtn">Add Employee</button><button id="overviewEmployeesBtn" class="secondary">Manage employees</button></div></div>
     <div id="overviewEmployees" class="employeeGrid"></div>
   </section>
   <div class="grid overviewGrid">
@@ -121,4 +121,4 @@
 <div class="actions"><button id="addEmployeeCancel" type="button" class="secondary">Cancel</button><button>Create Employee</button></div>
 </form></dialog>
 <dialog id="editDialog"><form id="editForm" class="dialog"><h2>Edit Time Entry</h2><input id="edit_guid" type="hidden"><label>Date<input id="edit_business_date" type="date" required></label><div class="row"><label>Regular hours<input id="edit_regular_hours" type="number" min="0" step=".01"></label><label>OT hours<input id="edit_overtime_hours" type="number" min="0" step=".01"></label></div><label>Hourly wage<input id="edit_hourly_wage" type="number" min=".01" step=".01"></label><div class="actions"><button id="editCancel" type="button" class="secondary">Cancel</button><button>Save correction</button></div></form></dialog>
-<script src="/admin/app.js?v=20261007-5" defer></script></body></html>
+<script src="/admin/app.js?v=20261007-6" defer></script></body></html>
