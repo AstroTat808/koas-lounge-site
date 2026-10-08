@@ -1,8 +1,8 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>Koa's Lounge Admin</title><link rel="stylesheet" href="/admin/styles.css?v=20261007-6"></head><body><!-- legacy-smoke-title: Koa's Lounge Payroll Admin -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>Koa's Lounge Admin</title><link rel="stylesheet" href="/admin/styles.css?v=20261007-7"></head><body><!-- legacy-smoke-title: Koa's Lounge Payroll Admin -->
 <div id="login" class="center"><div class="panel auth">
 <h1>Koa's Lounge</h1>
 <h2>Admin Login</h2>
-<p class="note">Secure administrator login · build 20261007-6</p>
+<p class="note">Secure administrator login · build 20261007-7</p>
 <form id="loginForm">
   <label>Email<input id="email" type="email" required></label>
   <label>Password<input id="password" type="password" required></label>
@@ -85,7 +85,16 @@
   <div class="pageIntro"><p class="eyebrow">Payroll</p><h2>Run & record payroll</h2><p class="note">Choose an employee, review the completed pay period, then record the actual payment.</p></div>
   <div class="grid payrollGrid"><section class="panel"><h2>Run Payroll</h2><form id="payForm"><label>Payroll employee<select id="pay_employee_select"></select></label><div class="row"><label>Period start<input id="period_start" type="date" required></label><label>Period end<input id="period_end" type="date" required></label></div><label>Payment date<input id="payment_date" type="date" required></label><label class="check"><input id="apply_tax_deductions" type="checkbox"> Apply 2026 tax deductions</label><label>Other deductions<input id="other_deductions" type="number" step=".01" min="0" value="0"></label>
 <div class="preview"><div><small>Hours</small><b id="pvHours">0.00</b></div><div><small>Gross</small><b id="pvGross">$0.00</b></div><div><small>Federal</small><b id="pvFederal">$0.00</b></div><div><small>Hawaiʻi</small><b id="pvHawaii">$0.00</b></div><div><small>FICA</small><b id="pvFica">$0.00</b></div><div><small>Net</small><b id="pvNet">$0.00</b></div></div>
-<label>Amount actually paid<input id="amount_paid" type="number" min="0" step=".01"></label><label>Payment method<select id="payment_method"><option>Venmo</option><option>Cash App</option><option>Cash</option><option>Zelle</option><option>Check</option><option>Other</option></select></label><label>Reference / confirmation<input id="payment_reference"></label><label>Notes<textarea id="notes"></textarea></label><button>Create & record pay run</button><p id="payResult" class="ok"></p></form></section><section class="panel payrollHelp"><h2>Payroll status</h2><div id="payrollEmployeeStatus" class="dashboardSummary"></div></section></div>
+<label>Amount actually paid<input id="amount_paid" type="number" min="0" step=".01"></label><label>Payment method<select id="payment_method"><option>Venmo</option><option>Cash App</option><option>Cash</option><option>Zelle</option><option>Check</option><option>Other</option></select></label><label>Reference / confirmation<input id="payment_reference"></label><label>Notes<textarea id="notes"></textarea></label><button>Create & record pay run</button><p id="payResult" class="ok"></p></form></section><section class="panel payrollHelp">
+<h2>Payroll status</h2><div id="payrollEmployeeStatus" class="dashboardSummary"></div>
+<div class="qbPayrollBox">
+  <p class="eyebrow">QuickBooks direct deposit</p>
+  <h3 id="qbPayrollHeading">QuickBooks not connected</h3>
+  <p id="qbPayrollNote" class="note">Connect QuickBooks in Settings to sync this pay period and continue into QuickBooks Payroll.</p>
+  <button id="quickbooksPayrollBtn" type="button" disabled>Sync hours & continue in QuickBooks</button>
+  <p id="quickbooksPayrollMsg" class="note"></p>
+</div>
+</section></div>
   <section class="panel"><h2>Payment History</h2><div class="table"><table><thead><tr><th>Date</th><th>Period</th><th>Freq.</th><th>Hours</th><th>Gross</th><th>Deductions</th><th>Net</th><th>Paid</th><th>Method</th><th>Taxes</th></tr></thead><tbody id="runsBody"></tbody></table></div></section>
 </section>
 
@@ -107,7 +116,23 @@
 
 <section id="settingsView" class="adminView" data-admin-view="settings" hidden>
   <div class="pageIntro"><p class="eyebrow">Settings</p><h2>Admin settings</h2><p class="note">Account security and administrative controls.</p></div>
-  <section class="panel"><h2>Account Security</h2><form id="passwordForm"><div class="row"><label>Current password<input id="current_password" type="password" required></label><label>New password<input id="new_password" type="password" minlength="12" required></label></div><button>Change password</button><p id="passwordMsg" class="ok"></p></form></section>
+  <section class="panel quickbooksPanel">
+  <div class="sectionHead"><div><p class="eyebrow">Payroll funding</p><h2>QuickBooks</h2><p class="note">Connect Koa's Admin directly to your QuickBooks company. Koa's can sync approved hours; QuickBooks remains responsible for taxes, payroll funding, direct deposit and final submission.</p></div><span id="quickbooksBadge" class="integrationBadge">Checking…</span></div>
+  <div id="quickbooksDetails" class="dashboardSummary"><span>Checking connection…</span></div>
+  <div class="actions">
+    <button id="quickbooksConnectBtn" type="button">Connect QuickBooks</button>
+    <button id="quickbooksMapBtn" type="button" class="secondary" hidden>Match employees</button>
+    <button id="quickbooksDisconnectBtn" type="button" class="danger" hidden>Disconnect</button>
+  </div>
+  <p id="quickbooksMsg" class="note"></p>
+  <div id="quickbooksSetupHelp" class="notice" hidden>
+    <b>One-time Intuit developer setup required.</b>
+    Add production server environment variables <code>QUICKBOOKS_CLIENT_ID</code> and <code>QUICKBOOKS_CLIENT_SECRET</code>, then register this exact redirect URI in the Intuit app:
+    <code id="quickbooksRedirectUri">https://koaslounge.com/.netlify/functions/payroll-admin?op=quickbooks-callback</code>.
+    The app only requests the QuickBooks Accounting scope so Koa's can match employees and sync time entries.
+  </div>
+</section>
+<section class="panel"><h2>Account Security</h2><form id="passwordForm"><div class="row"><label>Current password<input id="current_password" type="password" required></label><label>New password<input id="new_password" type="password" minlength="12" required></label></div><button>Change password</button><p id="passwordMsg" class="ok"></p></form></section>
 </section>
 </main></div>
 <dialog id="csvDialog"><div class="dialog"><div class="head"><div><h2>Review Toast CSV</h2><p id="csvPreviewFile"></p></div><button id="csvClose" class="secondary">×</button></div><div id="csvNewEmployees" class="newEmployees" hidden></div><div id="csvSummary" class="preview"></div><div class="table"><table><thead><tr><th>Row</th><th>Employee</th><th>Date</th><th>Regular</th><th>OT</th><th>Wage</th><th>Status</th></tr></thead><tbody id="csvPreviewBody"></tbody></table></div><div class="actions"><button id="csvCancel" class="secondary">Cancel</button><button id="csvApprove">Approve & import valid rows</button></div></div></dialog>
@@ -121,4 +146,4 @@
 <div class="actions"><button id="addEmployeeCancel" type="button" class="secondary">Cancel</button><button>Create Employee</button></div>
 </form></dialog>
 <dialog id="editDialog"><form id="editForm" class="dialog"><h2>Edit Time Entry</h2><input id="edit_guid" type="hidden"><label>Date<input id="edit_business_date" type="date" required></label><div class="row"><label>Regular hours<input id="edit_regular_hours" type="number" min="0" step=".01"></label><label>OT hours<input id="edit_overtime_hours" type="number" min="0" step=".01"></label></div><label>Hourly wage<input id="edit_hourly_wage" type="number" min=".01" step=".01"></label><div class="actions"><button id="editCancel" type="button" class="secondary">Cancel</button><button>Save correction</button></div></form></dialog>
-<script src="/admin/app.js?v=20261007-6" defer></script></body></html>
+<script src="/admin/app.js?v=20261007-7" defer></script></body></html>
