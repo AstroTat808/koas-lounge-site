@@ -14,3 +14,26 @@ button.is-loading::after{content:"";width:14px;height:14px;margin-left:10px;bord
 .newEmployees h3{margin:0 0 5px;font-family:Georgia,serif}
 .newEmployees>label{margin-top:10px}
 .newEmployees small{font-weight:400;color:var(--muted)}
+
+.adminHeader{gap:18px}
+.adminHero{margin-bottom:14px}
+.adminNav{position:sticky;top:58px;z-index:4;display:flex;gap:7px;overflow:auto;padding:10px 0 14px;background:linear-gradient(#0e1420 72%,transparent)}
+.navTab{background:#111c29;color:#dce8e6;border:1px solid var(--line);white-space:nowrap;padding:9px 14px}
+.navTab.active{background:linear-gradient(135deg,#00cfc8,var(--aqua));color:#061415;border-color:transparent}
+.pageIntro{margin:22px 0 14px}
+.pageIntro h2{font-family:Georgia,serif;font-size:34px;margin:2px 0 4px}
+.sectionHead{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
+.sectionHead h2{margin-bottom:5px}
+.employeeGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.employeeCard{display:flex;justify-content:space-between;gap:18px;align-items:center;padding:16px;border-radius:15px;background:#09131d;border:1px solid var(--line)}
+.employeeCard h3{font-family:Georgia,serif;font-size:24px;margin:2px 0 5px}
+.employeeCard p{margin:0;color:var(--muted);font-size:12px}
+.employeeCard .eyebrow{margin-bottom:2px}
+.dashboardSummary{display:grid;gap:7px;margin:8px 0 18px;padding:14px;border-radius:13px;background:#09131d;border:1px solid var(--line)}
+.dashboardSummary b{font-size:18px}
+.dashboardSummary span{color:var(--muted);font-size:12px}
+.overviewGrid{margin-top:16px}
+.adminView{padding-top:2px}
+.payrollHelp{align-self:start}
+@media(max-width:850px){.adminNav{top:70px}.employeeGrid{grid-template-columns:1fr}.sectionHead{flex-direction:column}.employeeCard{align-items:flex-start;flex-direction:column}}
+@media(max-width:560px){.adminNav{top:84px}.navTab{padding:8px 11px;font-size:12px}.pageIntro h2{font-size:29px}.employeeCard .actions{width:100%;flex-direction:row}.employeeCard .actions>*{flex:1}}
