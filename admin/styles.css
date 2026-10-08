@@ -37,3 +37,7 @@ button.is-loading::after{content:"";width:14px;height:14px;margin-left:10px;bord
 .payrollHelp{align-self:start}
 @media(max-width:850px){.adminNav{top:70px}.employeeGrid{grid-template-columns:1fr}.sectionHead{flex-direction:column}.employeeCard{align-items:flex-start;flex-direction:column}}
 @media(max-width:560px){.adminNav{top:84px}.navTab{padding:8px 11px;font-size:12px}.pageIntro h2{font-size:29px}.employeeCard .actions{width:100%;flex-direction:row}.employeeCard .actions>*{flex:1}}
+
+.newEmployeeDetected{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;margin-top:9px;padding:10px 12px;border-radius:10px;background:#09131d;border:1px solid var(--line)}
+.newEmployeeDetected span{color:var(--muted);font-size:11px}
+@media(max-width:560px){.newEmployeeDetected{grid-template-columns:1fr}.newEmployeeDetected span{display:block}}
