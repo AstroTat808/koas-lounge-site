@@ -61,9 +61,9 @@ jobs:
           for attempt in $(seq 1 20); do
             echo "Attempt $attempt: latest admin frontend"
             if curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-latest.html &&
-               grep -Fq '/admin/app.js?v=20261006-8' /tmp/admin-latest.html &&
-               curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261006-8" -o /tmp/admin-app.js &&
-               grep -Fq 'const BUILD="20261006-8"' /tmp/admin-app.js; then
+               grep -Fq '/admin/app.js?v=20261007-1' /tmp/admin-latest.html &&
+               curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261007-1" -o /tmp/admin-app.js &&
+               grep -Fq 'const BUILD="20261007-1"' /tmp/admin-app.js; then
               ok=1
               break
             fi
@@ -75,6 +75,15 @@ jobs:
             exit 1
           fi
           echo "Latest admin frontend bundle is live."
+
+      - name: Verify Toast CSV support
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261007-1" -o /tmp/admin-toast.js
+          grep -Fq 'payablehours' /tmp/admin-toast.js
+          grep -Fq 'weekly-derived' /tmp/admin-toast.js
+          grep -Fq 'Time Entries CSV supported' <(curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/")
+          echo "Native Toast CSV support is live."
 
       - name: Verify tax deductions default off
         run: |
