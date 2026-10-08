@@ -61,9 +61,9 @@ jobs:
           for attempt in $(seq 1 20); do
             echo "Attempt $attempt: latest admin frontend"
             if curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-latest.html &&
-               grep -Fq '/admin/app.js?v=20261007-3' /tmp/admin-latest.html &&
-               curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261007-3" -o /tmp/admin-app.js &&
-               grep -Fq 'const BUILD="20261007-3"' /tmp/admin-app.js; then
+               grep -Fq '/admin/app.js?v=20261007-4' /tmp/admin-latest.html &&
+               curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261007-4" -o /tmp/admin-app.js &&
+               grep -Fq 'const BUILD="20261007-4"' /tmp/admin-app.js; then
               ok=1
               break
             fi
@@ -76,11 +76,24 @@ jobs:
           fi
           echo "Latest admin frontend bundle is live."
 
+      - name: Verify admin overview landing
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-overview.html
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261007-4" -o /tmp/admin-overview.js
+          grep -Fq 'id="overviewView"' /tmp/admin-overview.html
+          grep -Fq 'Admin Dashboard' /tmp/admin-overview.html
+          grep -Fq 'data-view="employees"' /tmp/admin-overview.html
+          grep -Fq 'data-view="payroll"' /tmp/admin-overview.html
+          grep -Fq 'function renderOverview' /tmp/admin-overview.js
+          grep -Fq 'currentView="overview"' /tmp/admin-overview.js
+          echo "Business-level admin overview is live."
+
       - name: Verify multi-employee Toast import
         run: |
           set -euo pipefail
           curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-multi.html
-          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261007-3" -o /tmp/admin-multi.js
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261007-4" -o /tmp/admin-multi.js
           grep -Fq 'id="employee_select"' /tmp/admin-multi.html
           grep -Fq 'id="pay_employee_select"' /tmp/admin-multi.html
           grep -Fq 'New employees detected' /tmp/admin-multi.js
@@ -90,7 +103,7 @@ jobs:
       - name: Verify Toast CSV support
         run: |
           set -euo pipefail
-          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261007-3" -o /tmp/admin-toast.js
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261007-4" -o /tmp/admin-toast.js
           grep -Fq 'payablehours' /tmp/admin-toast.js
           grep -Fq 'weekly-derived' /tmp/admin-toast.js
           grep -Fq 'Time Entries CSV supported' <(curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/")
