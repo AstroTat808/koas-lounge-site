@@ -1,4 +1,4 @@
-const BUILD="20261007-2";
+const BUILD="20261007-3";
 const $=s=>document.querySelector(s),money=n=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(+n||0),num=n=>(+n||0).toFixed(2),esc=v=>String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
 const ep=o=>"/.netlify/functions/payroll-admin?op="+encodeURIComponent(o);let D={employees:[],entries:[],runs:[],audit:[]},selectedEmployeeId="craig-wong",timer,CSV=null,CSVNAME="";
 async function api(op,opt={}){const h={...(opt.headers||{})};if(opt.body)h["content-type"]="application/json";const url=ep(op)+(op==="status"||op==="me"?"&t="+Date.now():"");const r=await fetch(url,{credentials:"same-origin",cache:"no-store",...opt,headers:h}),j=await r.json().catch(()=>({error:"Request failed."}));if(r.status===401&&!["login","setup","status"].includes(op))login();if(!r.ok){const e=Error(j.error||"Request failed.");Object.assign(e,j);throw e}return j}
@@ -45,7 +45,7 @@ paid:["paidbreaktime","paidbreak"],
 tips:["cashtipsdeclared","declaredcashtips"]
 },first=(o,a)=>a.map(k=>o[k]).find(v=>String(v||"").trim())||"",n=v=>+String(v||"0").replace(/[$,%\s]/g,"")||0;
 const MONTHS={jan:"01",feb:"02",mar:"03",apr:"04",may:"05",jun:"06",jul:"07",aug:"08",sep:"09",oct:"10",nov:"11",dec:"12"};
-function iso(v){v=String(v||"").trim();if(/^\d{8}$/.test(v))return v.slice(0,4)+"-"+v.slice(4,6)+"-"+v.slice(6,8);if(/^\d{4}-\d{2}-\d{2}$/.test(v))return v;const m=/^(\d{1,2})-([A-Za-z]{3})-(\d{2}|\d{4})$/.exec(v);if(m){let y=+m[3];if(y<100)y+=2000;const mo=MONTHS[m[2].toLowerCase()];if(mo)return String(y).padStart(4,"0")+"-"+mo+"-"+String(+m[1]).padStart(2,"0")}const d=new Date(v);return Number.isNaN(d.getTime())?"":date(d)}
+function iso(v){v=String(v||"").trim();if(/^\d{8}$/.test(v))return v.slice(0,4)+"-"+v.slice(4,6)+"-"+v.slice(6,8);if(/^\d{4}-\d{2}-\d{2}$/.test(v))return v;let m=/^(\d{1,2})-([A-Za-z]{3})-(\d{2}|\d{4})$/.exec(v);if(m){let y=+m[3];if(y<100)y+=2000;const mo=MONTHS[m[2].toLowerCase()];if(mo)return String(y).padStart(4,"0")+"-"+mo+"-"+String(+m[1]).padStart(2,"0")}m=/^([A-Za-z]{3})\s+(\d{1,2}),\s*(\d{4})$/.exec(v);if(m){const mo=MONTHS[m[1].toLowerCase()];if(mo)return m[3]+"-"+mo+"-"+String(+m[2]).padStart(2,"0")}const d=new Date(v);return Number.isNaN(d.getTime())?"":date(d)}
 function clock(v){const m=/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec(String(v||"").trim());if(!m)return null;let h=+m[1]%12;if(m[3].toUpperCase()==="PM")h+=12;return h*60+(+m[2])}
 function addDaysIso(d,days){const z=new Date(d+"T12:00:00Z");z.setUTCDate(z.getUTCDate()+days);return z.toISOString().slice(0,10)}
 function stamp(d,v,next=false){const mins=clock(v);if(!d||mins==null)return null;const dd=next?addDaysIso(d,1):d,hh=String(Math.floor(mins/60)).padStart(2,"0"),mm=String(mins%60).padStart(2,"0");return dd+"T"+hh+":"+mm+":00-10:00"}
