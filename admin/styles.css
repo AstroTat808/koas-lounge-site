@@ -9,3 +9,8 @@ button.is-loading::after{content:"";width:14px;height:14px;margin-left:10px;bord
 #loginMsg.status{margin:0;padding:10px 12px;border-radius:10px}
 
 .csvMap{display:block;margin-top:4px;color:var(--muted);font-size:10px;line-height:1.25}
+
+.newEmployees{margin:0 0 14px;padding:14px;border:1px solid #b95cff42;border-radius:14px;background:#b95cff0b}
+.newEmployees h3{margin:0 0 5px;font-family:Georgia,serif}
+.newEmployees>label{margin-top:10px}
+.newEmployees small{font-weight:400;color:var(--muted)}
