@@ -76,6 +76,17 @@ jobs:
           fi
           echo "Latest admin frontend bundle is live."
 
+      - name: Verify tax deductions default off
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-tax-default.html
+          if grep -Eq 'id="apply_tax_deductions"[^>]*checked' /tmp/admin-tax-default.html; then
+            echo "Tax deductions are still checked by default in production."
+            exit 1
+          fi
+          grep -Fq 'id="apply_tax_deductions"' /tmp/admin-tax-default.html
+          echo "Tax deductions default is OFF."
+
       - name: Verify login POST path
         run: |
           set -euo pipefail
