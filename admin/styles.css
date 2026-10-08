@@ -7,3 +7,5 @@ button.is-loading{box-shadow:0 0 0 4px #03fff61c}
 button.is-loading::after{content:"";width:14px;height:14px;margin-left:10px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:koas-spin .65s linear infinite}
 @keyframes koas-spin{to{transform:rotate(360deg)}}
 #loginMsg.status{margin:0;padding:10px 12px;border-radius:10px}
+
+.csvMap{display:block;margin-top:4px;color:var(--muted);font-size:10px;line-height:1.25}
