@@ -86,6 +86,7 @@ jobs:
           grep -Fq 'Total unpaid payroll' /tmp/admin-outstanding.html
           grep -Fq 'runShortfall' /tmp/admin-outstanding.js
           grep -Fq 'ratePendingHours' /tmp/admin-outstanding.js
+          grep -Fq 't.business_date<=w.end' /tmp/admin-outstanding.js
           echo "Outstanding payroll dashboard is live."
 
       - name: Verify Toast duplicate protection
