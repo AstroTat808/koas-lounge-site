@@ -96,7 +96,7 @@ jobs:
           grep -Fq 'Accrued — not yet due' /tmp/admin-pay-separation.html
           grep -Fq 'id="overviewCurrentEmployees"' /tmp/admin-pay-separation.html
           grep -Fq 'Only completed pay periods are counted as unpaid/owed here.' /tmp/admin-pay-separation.js
-          grep -Fq 'Current-period accruals are informational' /tmp/admin-pay-separation.js
+          grep -Fq 'Upcoming payroll so far equals current-period accrued wages as of today' /tmp/admin-pay-separation.js
           if grep -Fq 'Total unpaid accrued' /tmp/admin-pay-separation.js; then echo 'Deprecated combined unpaid label still present'; exit 1; fi
           echo "Due payroll and current accrual are separated."
       - name: Verify pay runs track included shifts
