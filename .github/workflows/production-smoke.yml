@@ -103,7 +103,8 @@ jobs:
           grep -Fq 'function semimonthlyWindows' /tmp/admin-semimonthly.js
           grep -Fq 'Current periods accrued' /tmp/admin-semimonthly.html
           grep -Fq 'Next scheduled payday' /tmp/admin-semimonthly.js
-          grep -Fq 'Total unpaid accrued' /tmp/admin-semimonthly.js
+          grep -Fq 'Current accrued' /tmp/admin-semimonthly.js
+          grep -Fq 'Only completed pay periods are counted as unpaid/owed here.' /tmp/admin-semimonthly.js
           echo "Semi-monthly payroll schedule UI is live."
       - name: Verify selected employee payment status
         run: |
