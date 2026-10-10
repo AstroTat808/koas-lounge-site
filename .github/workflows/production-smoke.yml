@@ -135,8 +135,9 @@ jobs:
           grep -Fq 'id="overviewOutstandingTotal"' /tmp/admin-outstanding.html
           grep -Fq 'id="overviewCurrentAccrued"' /tmp/admin-outstanding.html
           grep -Fq 'id="overviewOutstandingEmployees"' /tmp/admin-outstanding.html
-          grep -Fq 'Due now' /tmp/admin-outstanding.html
-          grep -Fq 'Current accrued' /tmp/admin-outstanding.html
+          grep -Fq 'id="overviewCurrentEmployees"' /tmp/admin-outstanding.html
+          grep -Fq 'Payroll currently due' /tmp/admin-outstanding.html
+          grep -Fq 'Accrued — not yet due' /tmp/admin-outstanding.html
           grep -Fq 'shortfall' /tmp/admin-outstanding.js
           grep -Fq 'currentRateMissingHours' /tmp/admin-outstanding.js
           echo "Outstanding payroll dashboard is live."
