@@ -91,33 +91,35 @@ jobs:
         run: |
           set -euo pipefail
           curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-2" -o /tmp/admin-pay-status.js
-          grep -Fq 'PAID · $0.00 OWED' /tmp/admin-pay-status.js
-          grep -Fq 'AMOUNT OWED' /tmp/admin-pay-status.js
+          grep -Fq 'PAID · $0.00 DUE NOW' /tmp/admin-pay-status.js
+          grep -Fq 'AMOUNT DUE NOW' /tmp/admin-pay-status.js
+          grep -Fq 'Current accrued' /tmp/admin-pay-status.js
           grep -Fq 'Last payment' /tmp/admin-pay-status.js
           grep -Fq 'employeePaySnapshot' /tmp/admin-pay-status.js
           echo "Selected employee payroll status is explicit."
-      - name: Verify unpaid completed-week summary
+      - name: Verify due versus accrued payroll summary
         run: |
           set -euo pipefail
-          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-unpaid-summary.html
-          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-2" -o /tmp/admin-unpaid-summary.js
-          grep -Fq 'Unpaid completed-week hours' /tmp/admin-unpaid-summary.html
-          grep -Fq 'unpaidWeekEntries=weekEntries.filter' /tmp/admin-unpaid-summary.js
-          grep -Fq 'unpaidWeekHours' /tmp/admin-unpaid-summary.js
-          grep -Fq 'unpaid gross' /tmp/admin-unpaid-summary.js
-          grep -Fq 'Paid' /tmp/admin-unpaid-summary.js
-          echo "Completed-week summary is scoped to unpaid shifts."
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-due-accrued.html
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-2" -o /tmp/admin-due-accrued.js
+          grep -Fq 'Hours due now' /tmp/admin-due-accrued.html
+          grep -Fq 'Total due now' /tmp/admin-due-accrued.html
+          grep -Fq 'Current periods accrued' /tmp/admin-due-accrued.html
+          grep -Fq 'dueNow' /tmp/admin-due-accrued.js
+          grep -Fq 'currentGross' /tmp/admin-due-accrued.js
+          echo "Dashboard separates due payroll from open-period accrual."
       - name: Verify outstanding payroll dashboard
         run: |
           set -euo pipefail
           curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-outstanding.html
           curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-2" -o /tmp/admin-outstanding.js
           grep -Fq 'id="overviewOutstandingTotal"' /tmp/admin-outstanding.html
+          grep -Fq 'id="overviewCurrentAccrued"' /tmp/admin-outstanding.html
           grep -Fq 'id="overviewOutstandingEmployees"' /tmp/admin-outstanding.html
-          grep -Fq 'Total unpaid payroll' /tmp/admin-outstanding.html
-          grep -Fq 'runShortfall' /tmp/admin-outstanding.js
-          grep -Fq 'ratePendingHours' /tmp/admin-outstanding.js
-          grep -Fq 't.business_date<=w.end' /tmp/admin-outstanding.js
+          grep -Fq 'Due now' /tmp/admin-outstanding.html
+          grep -Fq 'Current accrued' /tmp/admin-outstanding.html
+          grep -Fq 'shortfall' /tmp/admin-outstanding.js
+          grep -Fq 'currentRateMissingHours' /tmp/admin-outstanding.js
           echo "Outstanding payroll dashboard is live."
 
       - name: Verify Toast duplicate protection
