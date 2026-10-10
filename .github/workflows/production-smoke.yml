@@ -61,9 +61,9 @@ jobs:
           for attempt in $(seq 1 20); do
             echo "Attempt $attempt: latest admin frontend"
             if curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-latest.html &&
-               grep -Fq '/admin/app.js?v=20261010-4' /tmp/admin-latest.html &&
-               curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-4" -o /tmp/admin-app.js &&
-               grep -Fq 'const BUILD="20261010-4"' /tmp/admin-app.js; then
+               grep -Fq '/admin/app.js?v=20261010-5' /tmp/admin-latest.html &&
+               curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-5" -o /tmp/admin-app.js &&
+               grep -Fq 'const BUILD="20261010-5"' /tmp/admin-app.js; then
               ok=1
               break
             fi
@@ -76,11 +76,22 @@ jobs:
           fi
           echo "Latest admin frontend bundle is live."
 
+      - name: Verify upcoming payroll excludes past due
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-upcoming.html
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-5" -o /tmp/admin-upcoming.js
+          grep -Fq 'Upcoming payroll so far' /tmp/admin-upcoming.html
+          grep -Fq 'Total earned, not yet paid' /tmp/admin-upcoming.html
+          grep -Fq 'Excludes past due' /tmp/admin-upcoming.js
+          grep -Fq 'upcoming ${esc(x.schedule.current.payday)} payroll so far' /tmp/admin-upcoming.js
+          grep -Fq 'Total earned, not yet paid' /tmp/admin-upcoming.js
+          echo "Upcoming payroll excludes prior-period balance."
       - name: Verify due payroll separated from current accrual
         run: |
           set -euo pipefail
           curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-pay-separation.html
-          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-4" -o /tmp/admin-pay-separation.js
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-5" -o /tmp/admin-pay-separation.js
           grep -Fq 'Payroll currently due' /tmp/admin-pay-separation.html
           grep -Fq 'Accrued — not yet due' /tmp/admin-pay-separation.html
           grep -Fq 'id="overviewCurrentEmployees"' /tmp/admin-pay-separation.html
@@ -91,14 +102,14 @@ jobs:
       - name: Verify pay runs track included shifts
         run: |
           set -euo pipefail
-          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-4" -o /tmp/admin-entry-coverage.js
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-5" -o /tmp/admin-entry-coverage.js
           grep -Fq 'Array.isArray(r.entry_guids)' /tmp/admin-entry-coverage.js
           echo "Frontend honors shift-level payroll coverage."
       - name: Verify semi-monthly payroll schedule
         run: |
           set -euo pipefail
           curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-semimonthly.html
-          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-4" -o /tmp/admin-semimonthly.js
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-5" -o /tmp/admin-semimonthly.js
           grep -Fq 'value="semimonthly"' /tmp/admin-semimonthly.html
           grep -Fq 'function semimonthlyWindows' /tmp/admin-semimonthly.js
           grep -Fq 'Current periods accrued' /tmp/admin-semimonthly.html
@@ -109,7 +120,7 @@ jobs:
       - name: Verify selected employee payment status
         run: |
           set -euo pipefail
-          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-4" -o /tmp/admin-pay-status.js
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-5" -o /tmp/admin-pay-status.js
           grep -Fq 'PAID · $0.00 DUE NOW' /tmp/admin-pay-status.js
           grep -Fq 'AMOUNT DUE NOW' /tmp/admin-pay-status.js
           grep -Fq 'Current accrued' /tmp/admin-pay-status.js
@@ -120,7 +131,7 @@ jobs:
         run: |
           set -euo pipefail
           curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-due-accrued.html
-          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-4" -o /tmp/admin-due-accrued.js
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-5" -o /tmp/admin-due-accrued.js
           grep -Fq 'Hours due now' /tmp/admin-due-accrued.html
           grep -Fq 'Total due now' /tmp/admin-due-accrued.html
           grep -Fq 'Current periods accrued' /tmp/admin-due-accrued.html
@@ -131,7 +142,7 @@ jobs:
         run: |
           set -euo pipefail
           curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-outstanding.html
-          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-4" -o /tmp/admin-outstanding.js
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-5" -o /tmp/admin-outstanding.js
           grep -Fq 'id="overviewOutstandingTotal"' /tmp/admin-outstanding.html
           grep -Fq 'id="overviewCurrentAccrued"' /tmp/admin-outstanding.html
           grep -Fq 'id="overviewOutstandingEmployees"' /tmp/admin-outstanding.html
@@ -145,7 +156,7 @@ jobs:
       - name: Verify Toast duplicate protection
         run: |
           set -euo pipefail
-          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-4" -o /tmp/admin-dedupe.js
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-5" -o /tmp/admin-dedupe.js
           grep -Fq 'Already imported — duplicate shift.' /tmp/admin-dedupe.js
           grep -Fq 'Duplicates' /tmp/admin-dedupe.js
           grep -Fq 'duplicates_skipped' /tmp/admin-dedupe.js
@@ -154,7 +165,7 @@ jobs:
       - name: Verify employee-scoped payment confirmation
         run: |
           set -euo pipefail
-          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-4" -o /tmp/admin-pay-confirm.js
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-5" -o /tmp/admin-pay-confirm.js
           grep -Fq 'payConfirmation?.employee_id===e.id' /tmp/admin-pay-confirm.js
           grep -Fq 'paid to "+paidEmployee.name+" via ' /tmp/admin-pay-confirm.js
           echo "Payment confirmation is scoped to the selected employee."
@@ -163,7 +174,7 @@ jobs:
         run: |
           set -euo pipefail
           curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-qb.html
-          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-4" -o /tmp/admin-qb.js
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-5" -o /tmp/admin-qb.js
           grep -Fq 'id="quickbooksConnectBtn"' /tmp/admin-qb.html
           grep -Fq 'id="quickbooksPayrollBtn"' /tmp/admin-qb.html
           grep -Fq 'quickbooks-status' /tmp/admin-qb.js
@@ -174,7 +185,7 @@ jobs:
         run: |
           set -euo pipefail
           curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-employees.html
-          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-4" -o /tmp/admin-employees.js
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-5" -o /tmp/admin-employees.js
           grep -Fq 'id="addEmployeeBtn"' /tmp/admin-employees.html
           grep -Fq 'id="overviewAddEmployeeBtn"' /tmp/admin-employees.html
           grep -Fq 'id="addEmployeeDialog"' /tmp/admin-employees.html
@@ -187,7 +198,7 @@ jobs:
         run: |
           set -euo pipefail
           curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-overview.html
-          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-4" -o /tmp/admin-overview.js
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-5" -o /tmp/admin-overview.js
           grep -Fq 'id="overviewView"' /tmp/admin-overview.html
           grep -Fq 'Admin Dashboard' /tmp/admin-overview.html
           grep -Fq 'data-view="employees"' /tmp/admin-overview.html
@@ -200,7 +211,7 @@ jobs:
         run: |
           set -euo pipefail
           curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/" -o /tmp/admin-multi.html
-          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-4" -o /tmp/admin-multi.js
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-5" -o /tmp/admin-multi.js
           grep -Fq 'id="employee_select"' /tmp/admin-multi.html
           grep -Fq 'id="pay_employee_select"' /tmp/admin-multi.html
           grep -Fq 'New employees detected' /tmp/admin-multi.js
@@ -210,7 +221,7 @@ jobs:
       - name: Verify Toast CSV support
         run: |
           set -euo pipefail
-          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-4" -o /tmp/admin-toast.js
+          curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-5" -o /tmp/admin-toast.js
           grep -Fq 'payablehours' /tmp/admin-toast.js
           grep -Fq 'weekly-derived' /tmp/admin-toast.js
           grep -Fq 'Time Entries CSV supported' <(curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/")
