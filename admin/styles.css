@@ -49,7 +49,7 @@ button.is-loading::after{content:"";width:14px;height:14px;margin-left:10px;bord
 .qbPayrollBox{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
 .qbPayrollBox h3{margin:3px 0 6px;font-family:Georgia,serif;font-size:22px}
 
-.overviewCards{grid-template-columns:repeat(6,minmax(0,1fr))}
+.overviewCards{grid-template-columns:repeat(4,minmax(0,1fr))}
 .moneyCard b{color:#91ebba}
 .outstandingPayrollPanel{margin-top:16px}
 .outstandingHero{display:grid;text-align:right;gap:4px;min-width:150px}
@@ -94,3 +94,6 @@ button.is-loading::after{content:"";width:14px;height:14px;margin-left:10px;bord
 .currentAccrualPanel .outstandingHero b{color:var(--aqua)}
 .currentRow{border-color:#61e7e744}
 .currentRow .outstandingRight>span{font-size:20px}
+
+.kpiSub{display:block;margin-top:4px;color:var(--muted);font-size:10px;line-height:1.25}
+.upcomingAmount{color:var(--aqua)!important;font-size:13px!important;font-weight:800}
