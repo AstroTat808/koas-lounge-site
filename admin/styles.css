@@ -83,3 +83,9 @@ button.is-loading::after{content:"";width:14px;height:14px;margin-left:10px;bord
 .payrollStatusFacts small,.lastPayment small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.07em}
 .payrollStatusFacts b,.lastPayment b{display:block;margin-top:4px;font-size:14px;color:#eef}
 @media(max-width:560px){.payrollStatusTop{flex-direction:column}.payrollBalance{font-size:26px}.payrollStatusFacts{grid-template-columns:1fr}}
+
+.outstandingTotals{display:flex;gap:24px;align-items:flex-start}
+.outstandingHero.accrued b{color:var(--aqua)}
+.outstandingRight>span{color:var(--aqua);font-weight:800;font-size:13px}
+.outstandingRight>small{color:var(--muted);font-size:10px}
+@media(max-width:700px){.outstandingTotals{width:100%;justify-content:space-between}.outstandingHero{text-align:left}}
