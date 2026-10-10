@@ -67,3 +67,19 @@ button.is-loading::after{content:"";width:14px;height:14px;margin-left:10px;bord
 @media(max-width:1000px){.overviewCards{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:850px){.overviewCards{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.overviewCards{grid-template-columns:1fr}.outstandingRow{align-items:flex-start;flex-direction:column}.outstandingRight{width:100%;justify-items:start}.outstandingRight button{width:100%}.outstandingHero{text-align:left}}
+
+.payrollStatusCard{display:grid;gap:14px;margin:8px 0 18px;padding:16px;border-radius:14px;background:#09131d;border:1px solid var(--line)}
+.payrollStatusCard.settled{border-color:#91ebba55;background:#91ebba08}
+.payrollStatusCard.owed{border-color:#ffd28a66;background:#ffd28a08}
+.payrollStatusTop{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
+.payrollStatusTop h3{margin:2px 0 4px;font-family:Georgia,serif;font-size:25px}
+.payrollStatusTop p{margin:0;color:var(--muted);font-size:12px}
+.payrollState{font-size:11px!important;font-weight:900!important;letter-spacing:.12em;text-transform:uppercase;color:#91ebba!important}
+.payrollStatusCard.owed .payrollState{color:#ffd28a!important}
+.payrollBalance{font-size:30px;color:#91ebba;white-space:nowrap}
+.payrollStatusCard.owed .payrollBalance{color:#ffd28a}
+.payrollStatusFacts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.payrollStatusFacts>div,.lastPayment{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#071019}
+.payrollStatusFacts small,.lastPayment small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.07em}
+.payrollStatusFacts b,.lastPayment b{display:block;margin-top:4px;font-size:14px;color:#eef}
+@media(max-width:560px){.payrollStatusTop{flex-direction:column}.payrollBalance{font-size:26px}.payrollStatusFacts{grid-template-columns:1fr}}
