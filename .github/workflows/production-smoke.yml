@@ -112,7 +112,7 @@ jobs:
           curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-5" -o /tmp/admin-semimonthly.js
           grep -Fq 'value="semimonthly"' /tmp/admin-semimonthly.html
           grep -Fq 'function semimonthlyWindows' /tmp/admin-semimonthly.js
-          grep -Fq 'Current periods accrued' /tmp/admin-semimonthly.html
+          grep -Fq 'Current period accrued' /tmp/admin-semimonthly.html
           grep -Fq 'Next scheduled payday' /tmp/admin-semimonthly.js
           grep -Fq 'Current accrued' /tmp/admin-semimonthly.js
           grep -Fq 'Only completed pay periods are counted as unpaid/owed here.' /tmp/admin-semimonthly.js
@@ -134,7 +134,7 @@ jobs:
           curl --fail --silent --show-error --location --max-time 20 "https://koaslounge.com/admin/app.js?v=20261010-5" -o /tmp/admin-due-accrued.js
           grep -Fq 'Hours due now' /tmp/admin-due-accrued.html
           grep -Fq 'Total due now' /tmp/admin-due-accrued.html
-          grep -Fq 'Current periods accrued' /tmp/admin-due-accrued.html
+          grep -Fq 'Current period accrued' /tmp/admin-due-accrued.html
           grep -Fq 'dueNow' /tmp/admin-due-accrued.js
           grep -Fq 'currentGross' /tmp/admin-due-accrued.js
           echo "Dashboard separates due payroll from open-period accrual."
