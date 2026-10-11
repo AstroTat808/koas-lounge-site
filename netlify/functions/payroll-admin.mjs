@@ -130,15 +130,16 @@ function imported(x,rows,adminEmail="csv-import"){
       }else{
         const before=structuredClone(existing);
         x.entries[ix]=mergeToastEntry(existing,rec);
+        const correctionChange=isCorrection||existing.source==="Toast CSV";
         x.audit.push({
           id:crypto.randomUUID(),
-          action:isCorrection?"toast-correction":"toast-update",
+          action:correctionChange?"toast-correction":"toast-update",
           before_data:before,
           after_data:x.entries[ix],
           created_at:now(),
           admin_email:adminEmail
         });
-        if(isCorrection)corrected++;
+        if(correctionChange)corrected++;
         else updated++;
       }
     }else{
