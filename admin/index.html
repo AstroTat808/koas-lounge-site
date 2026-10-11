@@ -1,8 +1,8 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>Koa's Lounge Admin</title><link rel="stylesheet" href="/admin/styles.css?v=20261010-5"></head><body><!-- legacy-smoke-title: Koa's Lounge Payroll Admin -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>Koa's Lounge Admin</title><link rel="stylesheet" href="/admin/styles.css?v=20261011-1"></head><body><!-- legacy-smoke-title: Koa's Lounge Payroll Admin -->
 <div id="login" class="center"><div class="panel auth">
 <h1>Koa's Lounge</h1>
 <h2>Admin Login</h2>
-<p class="note">Secure administrator login · build 20261010-5</p>
+<p class="note">Secure administrator login · build 20261011-1</p>
 <form id="loginForm">
   <label>Email<input id="email" type="email" required></label>
   <label>Password<input id="password" type="password" required></label>
@@ -114,7 +114,7 @@
 
 <section id="timeView" class="adminView" data-admin-view="time" hidden>
   <div class="pageIntro"><p class="eyebrow">Time entries</p><h2>Imported shifts & corrections</h2><p class="note">Review all employee shifts. Editing or deleting a paid-period entry preserves the historical paycheck.</p></div>
-  <section class="panel"><h2>Time Entries</h2><p class="note">CSV files are previewed before import. <a href="/admin/toast-csv-template.csv">Download CSV template</a>.</p><div class="table"><table><thead><tr><th>Employee</th><th>Date</th><th>Regular</th><th>OT</th><th>Wage</th><th>Gross</th><th>Source</th><th>Actions</th></tr></thead><tbody id="entriesBody"></tbody></table></div></section>
+  <section class="panel"><h2>Time Entries</h2><p class="note">CSV files are previewed before import. <a href="/admin/toast-csv-template.csv">Download CSV template</a>.</p><div class="table"><table><thead><tr><th>Employee</th><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Regular</th><th>OT</th><th>Wage</th><th>Gross</th><th>Source</th><th>Actions</th></tr></thead><tbody id="entriesBody"></tbody></table></div></section>
   <section class="panel"><h2>Correction Audit Trail</h2><div class="table"><table><thead><tr><th>Employee</th><th>When</th><th>Action</th><th>Date</th><th>Change</th></tr></thead><tbody id="auditBody"></tbody></table></div></section>
 </section>
 
@@ -122,7 +122,7 @@
   <div class="pageIntro"><p class="eyebrow">Imports</p><h2>Toast time entries</h2><p class="note">Preview before import. New employee names are detected and kept separate from existing payroll records.</p></div>
   <section class="panel">
     <div class="actions"><button id="importsImportBtn">Preview Toast CSV</button><button id="syncBtn" class="secondary">Sync Toast API</button></div>
-    <div class="notice"><b>Native Toast Time Entries CSV supported.</b> Employee, Date, Time In, Time Out and Payable Hours are read automatically. New Toast employee names are created automatically and their time entries import immediately; you can set their hourly rate afterward.</div>
+    <div class="notice"><b>Native Toast Time Entries CSV supported.</b> Employee, Date, Time In, Time Out and Payable Hours are read automatically. Re-imported Toast corrections update the matching shift instead of creating a second shift when the match is clear. New Toast employee names are created automatically.</div>
     <div class="notice"><b>Tips are excluded from this hours calculation.</b> Cash Tips Declared is not used to calculate hourly payroll here.</div>
     <p class="note"><a href="/admin/toast-csv-template.csv">Download generic CSV template</a></p>
   </section>
@@ -149,7 +149,7 @@
 <section class="panel"><h2>Account Security</h2><form id="passwordForm"><div class="row"><label>Current password<input id="current_password" type="password" required></label><label>New password<input id="new_password" type="password" minlength="12" required></label></div><button>Change password</button><p id="passwordMsg" class="ok"></p></form></section>
 </section>
 </main></div>
-<dialog id="csvDialog"><div class="dialog"><div class="head"><div><h2>Review Toast CSV</h2><p id="csvPreviewFile"></p></div><button id="csvClose" class="secondary">×</button></div><div id="csvNewEmployees" class="newEmployees" hidden></div><div id="csvSummary" class="preview"></div><div class="table"><table><thead><tr><th>Row</th><th>Employee</th><th>Date</th><th>Regular</th><th>OT</th><th>Wage</th><th>Status</th></tr></thead><tbody id="csvPreviewBody"></tbody></table></div><div class="actions"><button id="csvCancel" class="secondary">Cancel</button><button id="csvApprove">Approve & import valid rows</button></div></div></dialog>
+<dialog id="csvDialog"><div class="dialog"><div class="head"><div><h2>Review Toast CSV</h2><p id="csvPreviewFile"></p></div><button id="csvClose" class="secondary">×</button></div><div id="csvNewEmployees" class="newEmployees" hidden></div><div id="csvSummary" class="preview"></div><div class="table"><table><thead><tr><th>Row</th><th>Employee</th><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Regular</th><th>OT</th><th>Wage</th><th>Status</th></tr></thead><tbody id="csvPreviewBody"></tbody></table></div><div class="actions"><button id="csvCancel" class="secondary">Cancel</button><button id="csvApprove">Approve & import valid rows</button></div></div></dialog>
 <dialog id="addEmployeeDialog"><form id="addEmployeeForm" class="dialog">
 <div class="head"><div><p class="eyebrow">Employees</p><h2>Add Employee</h2></div><button id="addEmployeeClose" type="button" class="secondary">×</button></div>
 <label>Employee name<input id="new_employee_name" required placeholder="First Last"></label>
@@ -160,4 +160,4 @@
 <div class="actions"><button id="addEmployeeCancel" type="button" class="secondary">Cancel</button><button>Create Employee</button></div>
 </form></dialog>
 <dialog id="editDialog"><form id="editForm" class="dialog"><h2>Edit Time Entry</h2><input id="edit_guid" type="hidden"><label>Date<input id="edit_business_date" type="date" required></label><div class="row"><label>Regular hours<input id="edit_regular_hours" type="number" min="0" step=".01"></label><label>OT hours<input id="edit_overtime_hours" type="number" min="0" step=".01"></label></div><label>Hourly wage<input id="edit_hourly_wage" type="number" min=".01" step=".01"></label><div class="actions"><button id="editCancel" type="button" class="secondary">Cancel</button><button>Save correction</button></div></form></dialog>
-<script src="/admin/app.js?v=20261010-5" defer></script></body></html>
+<script src="/admin/app.js?v=20261011-1" defer></script></body></html>
