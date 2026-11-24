@@ -2,6 +2,9 @@
   "name": "koas-lounge-site",
   "private": true,
   "dependencies": {
-    "@netlify/blobs": "latest"
+    "@netlify/blobs": "11.1.4"
+  },
+  "engines": {
+    "node": ">=22.12.0 <23"
   }
 }
