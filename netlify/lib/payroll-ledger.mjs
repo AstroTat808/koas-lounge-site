@@ -10,7 +10,9 @@ function overlaps(a,b){
  if(ag&&bg){const ids=new Set(ag);return bg.some(id=>ids.has(id))}
  return !!(a.period_start&&a.period_end&&b.period_start&&b.period_end&&a.period_start<=b.period_end&&b.period_start<=a.period_end);
 }
+import { payrollScope } from "./payroll-owner-exclusion.mjs";
 export function buildLedger(x){
+ x=payrollScope(x);
  const byEmployee=Object.create(null);
  for(const e of x.employees||[]){
   const rows=(x.entries||[]).filter(t=>t.employee_id===e.id).sort(shiftOrder),old=(x.runs||[]).filter(r=>r.employee_id===e.id).sort(paymentOrder),payments=(x.payments||[]).filter(r=>r.employee_id===e.id),deductions=(x.deductions||[]).filter(r=>r.employee_id===e.id);

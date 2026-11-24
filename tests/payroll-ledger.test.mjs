@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {buildLedger} from "../netlify/lib/payroll-ledger.mjs";
+import {ownerName,ownerIdentity,ownerRow,archiveOwnerTime,payrollScope} from "../netlify/lib/payroll-owner-exclusion.mjs";
 const e={id:"craig",hourly_rate:16},t=(id,date,h)=>({employee_id:e.id,toast_guid:id,business_date:date,regular_hours:h,hourly_wage:16}),pay=(id,amount)=>({id,employee_id:e.id,payment_date:"2026-11-23",amount_paid:amount});
 const snapshot=x=>buildLedger({employees:[e],entries:[],runs:[],payments:[],deductions:[],...x}).byEmployee.craig;
 test("same legacy period twice counts each cash payment and each shift once",()=>{
@@ -23,4 +24,14 @@ test("correction recalculates wages without modifying a payment",()=>{
 test("multiple employees never offset each other's balances",()=>{
  const p=buildLedger({employees:[e,{id:"other",hourly_rate:20}],entries:[t("a","2026-11-01",10),{employee_id:"other",toast_guid:"b",regular_hours:2,business_date:"2026-11-01"}],payments:[pay("p",200)]}).byEmployee;
  assert.equal(p.craig.credit_cents,4000);assert.equal(p.other.owed_cents,4000);
+});
+
+test("owner entries are excluded from the ledger and archived, other employees and payments remain intact",()=>{
+ const owner={id:"emp-owner",name:"Christopher Sibel",hourly_rate:25,toast_aliases:["Sibel, Chris"],toast_employee_guid:"owner-toast"},other={id:"other",name:"Jordan Sibel",hourly_rate:20};
+ const x={employees:[e,owner,other],entries:[t("craig","2026-11-01",10),{employee_id:owner.id,toast_guid:"owner-shift",regular_hours:4},{employee_id:e.id,toast_guid:"mislabeled",regular_hours:3,raw:{employeeName:"Sibel, Christopher"}},{employee_id:other.id,toast_guid:"other-shift",regular_hours:1}],runs:[{employee_id:owner.id,id:"past",amount_paid:12}],payments:[pay("p",25)]};
+ assert.equal(ownerName("SIBEL, CHRISTOPHER"),true);assert.equal(ownerName("Chris Sibel"),true);assert.equal(ownerName("Jordan Sibel"),false);
+ assert.equal(ownerRow({employeeReference:{guid:"owner-toast"}},ownerIdentity(x)),true);
+ assert.equal(archiveOwnerTime(x),2);assert.equal(archiveOwnerTime(x),0);assert.equal(x.excluded_time_entries.length,2);assert.equal(x.runs.length,1);
+ const scoped=payrollScope(x);assert.equal(scoped.employees.length,2);assert.equal(scoped.entries.length,2);assert.equal(scoped.runs.length,0);
+ const p=buildLedger(x).byEmployee;assert.equal(p[owner.id],undefined);assert.equal(p.craig.gross_cents,16000);assert.equal(p.craig.paid_cents,2500);assert.equal(p.other.gross_cents,2000);
 });
