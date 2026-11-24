@@ -117,3 +117,9 @@ button.is-loading::after{content:"";width:14px;height:14px;margin-left:10px;bord
 .timeEmployeeSummaryRow strong{color:#ffd28a;font-size:16px}
 @media(max-width:700px){.timeSummary{grid-template-columns:1fr 1fr}.timeEmployeeSummaryRow{grid-template-columns:1fr auto}.timeEmployeeSummaryRow strong{grid-column:2}}
 @media(max-width:480px){.timeSummary{grid-template-columns:1fr}}
+
+/* Running ledger and sortable shift table */
+.timeFilters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:end;margin:16px 0 8px}
+.timeFilters label{margin:0;min-width:0}.timeFilters button{align-self:end}.sortHeader{appearance:none;border:0;background:transparent;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;padding:0;white-space:nowrap;text-align:left;cursor:pointer;min-width:0;width:auto;box-shadow:none}
+.sortHeader:hover,.sortHeader:focus-visible{color:var(--aqua);background:transparent}.sortHeader span{color:var(--aqua);margin-left:3px}.payBadge.partial{color:#8be5ec;background:#8be5ec12;border:1px solid #8be5ec55}
+@media(max-width:800px){.timeFilters{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:480px){.timeFilters{grid-template-columns:1fr}}

@@ -1,8 +1,8 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>Koa's Lounge Admin</title><link rel="stylesheet" href="/admin/styles.css?v=20261011-4"></head><body><!-- legacy-smoke-title: Koa's Lounge Payroll Admin -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>Koa's Lounge Admin</title><link rel="stylesheet" href="/admin/styles.css?v=20261123-1"></head><body><!-- legacy-smoke-title: Koa's Lounge Payroll Admin -->
 <div id="login" class="center"><div class="panel auth">
 <h1>Koa's Lounge</h1>
 <h2>Admin Login</h2>
-<p class="note">Secure administrator login · build 20261011-4</p>
+<p class="note">Secure administrator login · build 20261123-1</p>
 <form id="loginForm">
   <label>Email<input id="email" type="email" required></label>
   <label>Password<input id="password" type="password" required></label>
@@ -32,7 +32,7 @@
 <main>
 <section class="hero adminHero">
   <div><p class="eyebrow">Koa's Lounge administration</p><h1>Admin Dashboard</h1><p id="overviewPeriodLabel">Operations, employees and payroll at a glance.</p></div>
-  <div class="actions"><button id="dashboardImportBtn">Import Toast CSV</button><button id="dashboardPayrollBtn" class="secondary">Run payroll</button></div>
+  <div class="actions"><button id="dashboardImportBtn">Import Toast CSV</button><button id="dashboardPayrollBtn" class="secondary">Record payment</button></div>
 </section>
 
 <nav class="adminNav" aria-label="Admin sections">
@@ -50,32 +50,27 @@
 <section id="overviewView" class="adminView" data-admin-view="overview">
   <section class="cards overviewCards">
     <div><small>Active employees</small><b id="overviewEmployeeCount">0</b></div>
-    <div><small>Hours due now</small><b id="overviewHours">0.00</b></div>
-    <div><small>Awaiting payroll</small><b id="overviewAwaiting">0</b></div>
-    <div class="moneyCard"><small>Past due payroll</small><b id="overviewOutstandingTotal">$0.00</b></div>
-    <div><small>Current period accrued</small><b id="overviewCurrentAccrued">$0.00</b></div>
-    <div><small>Upcoming payroll so far</small><b id="overviewUpcomingPayroll">$0.00</b><span id="overviewUpcomingLabel" class="kpiSub">Excludes past due</span></div>
-    <div><small>Last payroll</small><b id="overviewLastPayroll">—</b></div>
+    <div><small>Total hours worked</small><b id="overviewHours">0.00</b></div>
+    <div><small>Employees with balance or review</small><b id="overviewAwaiting">0</b></div>
+    <div class="moneyCard"><small>Total outstanding wages</small><b id="overviewOutstandingTotal">$0.00</b></div>
+    <div><small>Total gross wages earned</small><b id="overviewCurrentAccrued">$0.00</b></div>
+    <div><small>Total payments made</small><b id="overviewUpcomingPayroll">$0.00</b><span id="overviewUpcomingLabel" class="kpiSub">All recorded history</span></div>
+    <div><small>Last payment</small><b id="overviewLastPayroll">—</b></div>
   </section>
   <section class="panel">
     <div class="sectionHead"><div><p class="eyebrow">Team</p><h2>Employees</h2><p class="note">Open an employee only when you need their detailed payroll or tax profile.</p></div><div class="actions"><button id="overviewAddEmployeeBtn">Add Employee</button><button id="overviewEmployeesBtn" class="secondary">Manage employees</button></div></div>
     <div id="overviewEmployees" class="employeeGrid"></div>
   </section>
   <section class="panel outstandingPayrollPanel">
-    <div class="sectionHead"><div><p class="eyebrow">Outstanding payroll</p><h2>Payroll currently due</h2><p class="note">Only completed pay periods that have not been paid are included here.</p></div><div class="outstandingHero"><small>Total due now</small><b id="overviewOutstandingHero">$0.00</b></div></div>
+    <div class="sectionHead"><div><p class="eyebrow">Running payroll</p><h2>Outstanding wage balances</h2><p class="note">All imported shifts, actual payments, and recorded deductions. No pay-period cutoff.</p></div><div class="outstandingHero"><small>Total outstanding</small><b id="overviewOutstandingHero">$0.00</b></div></div>
     <div id="overviewOutstandingEmployees" class="outstandingList"></div>
     <p id="overviewOutstandingNote" class="note"></p>
   </section>
-  <section class="panel currentAccrualPanel">
-    <div class="sectionHead"><div><p class="eyebrow">Current pay period</p><h2>Accrued — not yet due</h2><p class="note">This is also the upcoming payroll amount earned so far for the open period. Any past-due payroll is excluded from the upcoming amount.</p></div><div class="outstandingHero accrued"><small>Total accrued / upcoming so far</small><b id="overviewCurrentAccruedHero">$0.00</b></div></div>
-    <div id="overviewCurrentEmployees" class="outstandingList"></div>
-    <p id="overviewCurrentAccruedNote" class="note"></p>
-  </section>
   <div class="grid overviewGrid">
     <section class="panel">
-      <p class="eyebrow">Payroll</p><h2>Payroll due now</h2>
+      <p class="eyebrow">Payroll</p><h2>Running payroll summary</h2>
       <div id="overviewPayrollSummary" class="dashboardSummary"></div>
-      <button id="overviewPayrollBtn">Open payroll</button>
+      <button id="overviewPayrollBtn">Open payroll ledger</button>
     </section>
     <section class="panel">
       <p class="eyebrow">Toast</p><h2>Time & imports</h2>
@@ -95,25 +90,26 @@
 </section>
 
 <section id="payrollView" class="adminView" data-admin-view="payroll" hidden>
-  <div class="pageIntro"><p class="eyebrow">Payroll</p><h2>Run & record payroll</h2><p class="note">Choose an employee, review the completed pay period, then record the actual payment.</p></div>
-  <div class="grid payrollGrid"><section class="panel"><h2>Run Payroll</h2><form id="payForm"><label>Payroll employee<select id="pay_employee_select"></select></label><div class="row"><label>Period start<input id="period_start" type="date" required></label><label>Period end<input id="period_end" type="date" required></label></div><label>Payment date<input id="payment_date" type="date" required></label><label class="check"><input id="apply_tax_deductions" type="checkbox"> Apply 2026 tax deductions</label><label>Other deductions<input id="other_deductions" type="number" step=".01" min="0" value="0"></label>
-<div class="preview"><div><small>Hours</small><b id="pvHours">0.00</b></div><div><small>Gross</small><b id="pvGross">$0.00</b></div><div><small>Federal</small><b id="pvFederal">$0.00</b></div><div><small>Hawaiʻi</small><b id="pvHawaii">$0.00</b></div><div><small>FICA</small><b id="pvFica">$0.00</b></div><div><small>Net</small><b id="pvNet">$0.00</b></div></div>
-<label>Amount actually paid<input id="amount_paid" type="number" min="0" step=".01"></label><label>Payment method<select id="payment_method"><option>Venmo</option><option>Cash App</option><option>Cash</option><option>Zelle</option><option>Check</option><option>Other</option></select></label><label>Reference / confirmation<input id="payment_reference"></label><label>Notes<textarea id="notes"></textarea></label><button>Create & record pay run</button><p id="payResult" class="ok"></p></form></section><section class="panel payrollHelp">
-<h2>Payroll status</h2><div id="payrollEmployeeStatus" class="dashboardSummary"></div>
+  <div class="pageIntro"><p class="eyebrow">Payroll</p><h2>Running payroll ledger</h2><p class="note">Wages accumulate from time entries. Record actual payments or documented deductions separately without creating another pay run.</p></div>
+  <div class="grid payrollGrid"><section class="panel"><h2>Record transaction</h2><form id="payForm"><label>Employee<select id="pay_employee_select"></select></label><label>Transaction type<select id="ledger_kind"><option value="payment">Payment already made</option><option value="deduction">Actual payroll deduction</option></select></label><label>Transaction date<input id="payment_date" type="date" required></label>
+  <div class="preview"><div><small>All hours worked</small><b id="pvHours">0.00</b></div><div><small>Gross wages earned</small><b id="pvGross">$0.00</b></div><div><small>Recorded deductions</small><b id="pvDeductions">$0.00</b></div><div><small>Total paid</small><b id="pvPaid">$0.00</b></div><div><small>Running balance</small><b id="pvNet">$0.00</b></div></div>
+  <label>Amount<input id="amount_paid" type="number" min=".01" max="1000000" step=".01" required></label><label id="paymentMethodLabel">Payment method<select id="payment_method"><option>Venmo</option><option>Cash App</option><option>Cash</option><option>Zelle</option><option>Check</option><option>Direct deposit</option><option>Other</option></select></label><label>Reference / confirmation<input id="payment_reference" maxlength="200"></label><label>Notes<textarea id="notes" maxlength="2000"></textarea></label><p id="ledgerTransactionNote" class="note">Record only money actually paid. This does not send money or calculate taxes.</p><button id="recordPaymentBtn">Record payment</button><p id="payResult" class="ok" role="status"></p></form></section><section class="panel payrollHelp">
+  <h2>Payroll status</h2><div id="payrollEmployeeStatus" class="dashboardSummary"></div>
 <div class="qbPayrollBox">
   <p class="eyebrow">QuickBooks direct deposit</p>
   <h3 id="qbPayrollHeading">QuickBooks not connected</h3>
-  <p id="qbPayrollNote" class="note">Connect QuickBooks in Settings to sync this pay period and continue into QuickBooks Payroll.</p>
+  <p id="qbPayrollNote" class="note">Connect QuickBooks in Settings to sync the selected date range and continue into QuickBooks Payroll.</p>
+  <p class="note">Optional QuickBooks export range; it does not affect the running balance.</p><div class="row"><label>Sync from<input id="period_start" type="date"></label><label>Sync through<input id="period_end" type="date"></label></div>
   <button id="quickbooksPayrollBtn" type="button" disabled>Sync hours & continue in QuickBooks</button>
   <p id="quickbooksPayrollMsg" class="note"></p>
 </div>
 </section></div>
-  <section class="panel"><h2>Payment History</h2><div class="table"><table><thead><tr><th>Date</th><th>Period</th><th>Freq.</th><th>Hours</th><th>Gross</th><th>Deductions</th><th>Net</th><th>Paid</th><th>Method</th><th>Taxes</th></tr></thead><tbody id="runsBody"></tbody></table></div></section>
+  <section class="panel"><h2>Payment &amp; Deduction History</h2><p class="note">Actual cash payments remain separate from wages. Prior payroll records are retained; verify historical deductions against formal payroll records.</p><div class="table"><table><thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>Method</th><th>Reference</th><th>Notes</th></tr></thead><tbody id="runsBody"></tbody></table></div></section>
 </section>
 
 <section id="timeView" class="adminView" data-admin-view="time" hidden>
-  <div class="pageIntro"><p class="eyebrow">Time entries</p><h2>Imported shifts & corrections</h2><p class="note">Review all employee shifts. Editing or deleting a paid-period entry preserves the historical paycheck.</p></div>
-  <section class="panel"><h2>Time Entries</h2><p class="note">CSV files are previewed before import. <a href="/admin/toast-csv-template.csv">Download CSV template</a>.</p><div id="timeEntriesSummary" class="timeSummary"></div><div id="timeEntriesEmployeeSummary" class="timeEmployeeSummary"></div><div class="table"><table><thead><tr><th>Employee</th><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Regular</th><th>OT</th><th>Wage</th><th>Gross</th><th>Source</th><th>Payment Status</th><th>Actions</th></tr></thead><tbody id="entriesBody"></tbody></table></div></section>
+  <div class="pageIntro"><p class="eyebrow">Time entries</p><h2>Imported shifts & corrections</h2><p class="note">Review all employee shifts. Editing a shift recalculates wages while preserving recorded payments. Allocation is oldest-shift-first.</p></div>
+  <section class="panel"><h2>Time Entries</h2><p class="note">CSV files are previewed before import. <a href="/admin/toast-csv-template.csv">Download CSV template</a>.</p><div class="timeFilters" aria-label="Filter time entries"><label>Employee<select id="timeFilterEmployee"><option value="">All employees</option></select></label><label>From date<input id="timeFilterFrom" type="date"></label><label>Through date<input id="timeFilterTo" type="date"></label><label>Payment status<select id="timeFilterStatus"><option value="">All statuses</option><option value="paid">Paid / covered</option><option value="partial">Partially paid</option><option value="unpaid">Unpaid</option><option value="rate-needed">Rate needed</option><option value="no-wages">No wages</option></select></label><label>Source<select id="timeFilterSource"><option value="">All sources</option></select></label><label>Search name or source<input id="timeFilterSearch" type="search" placeholder="Search entries"></label><button class="secondary" type="button" id="timeFilterClear">Clear filters</button></div><p class="note" id="timeFilterCount" role="status"></p><div id="timeEntriesSummary" class="timeSummary"></div><div id="timeEntriesEmployeeSummary" class="timeEmployeeSummary"></div><div class="table"><table><thead><tr><th scope="col" data-sort-col="employee"><button type="button" class="sortHeader" data-sort="employee">Employee<span aria-hidden="true"></span></button></th><th scope="col" data-sort-col="date"><button type="button" class="sortHeader" data-sort="date">Date<span aria-hidden="true"></span></button></th><th scope="col" data-sort-col="in"><button type="button" class="sortHeader" data-sort="in">Clock In<span aria-hidden="true"></span></button></th><th scope="col" data-sort-col="out"><button type="button" class="sortHeader" data-sort="out">Clock Out<span aria-hidden="true"></span></button></th><th scope="col" data-sort-col="regular"><button type="button" class="sortHeader" data-sort="regular">Regular<span aria-hidden="true"></span></button></th><th scope="col" data-sort-col="ot"><button type="button" class="sortHeader" data-sort="ot">OT<span aria-hidden="true"></span></button></th><th scope="col" data-sort-col="wage"><button type="button" class="sortHeader" data-sort="wage">Wage<span aria-hidden="true"></span></button></th><th scope="col" data-sort-col="gross"><button type="button" class="sortHeader" data-sort="gross">Gross<span aria-hidden="true"></span></button></th><th scope="col" data-sort-col="paid"><button type="button" class="sortHeader" data-sort="paid">Paid<span aria-hidden="true"></span></button></th><th scope="col" data-sort-col="deduction"><button type="button" class="sortHeader" data-sort="deduction">Deductions<span aria-hidden="true"></span></button></th><th scope="col" data-sort-col="balance"><button type="button" class="sortHeader" data-sort="balance">Unpaid<span aria-hidden="true"></span></button></th><th scope="col" data-sort-col="source"><button type="button" class="sortHeader" data-sort="source">Source<span aria-hidden="true"></span></button></th><th scope="col" data-sort-col="status"><button type="button" class="sortHeader" data-sort="status">Payment Status<span aria-hidden="true"></span></button></th><th>Actions</th></tr></thead><tbody id="entriesBody"></tbody></table></div></section>
   <section class="panel"><h2>Correction Audit Trail</h2><div class="table"><table><thead><tr><th>Employee</th><th>When</th><th>Action</th><th>Date</th><th>Change</th></tr></thead><tbody id="auditBody"></tbody></table></div></section>
 </section>
 
@@ -159,4 +155,4 @@
 <div class="actions"><button id="addEmployeeCancel" type="button" class="secondary">Cancel</button><button>Create Employee</button></div>
 </form></dialog>
 <dialog id="editDialog"><form id="editForm" class="dialog"><h2>Edit Time Entry</h2><input id="edit_guid" type="hidden"><label>Date<input id="edit_business_date" type="date" required></label><div class="row"><label>Regular hours<input id="edit_regular_hours" type="number" min="0" step=".01"></label><label>OT hours<input id="edit_overtime_hours" type="number" min="0" step=".01"></label></div><label>Hourly wage<input id="edit_hourly_wage" type="number" min=".01" step=".01"></label><div class="actions"><button id="editCancel" type="button" class="secondary">Cancel</button><button>Save correction</button></div></form></dialog>
-<script src="/admin/app.js?v=20261011-4" defer></script></body></html>
+<script src="/admin/app.js?v=20261123-1" defer></script></body></html>
